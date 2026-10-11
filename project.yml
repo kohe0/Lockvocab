@@ -6,44 +6,64 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    DEVELOPMENT_TEAM: ""   # ← 自分のTeam IDを入れる(XcodeのSigningで選んでもOK)
+    DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
 targets:
   LockVocab:
     type: application
     platform: iOS
-    sources: [App, Shared]
+    sources:
+      - path: .
+        includes:
+          - LockVocabApp.swift
+          - WordStore.swift
+          - ContentView.swift
+          - WordEditView.swift
+          - SettingsView.swift
+          - AppGroup.swift
+          - Models.swift
+          - SharedStore.swift
+          - WordPicker.swift
+          - SeedWords.swift
     dependencies:
       - target: LockVocabWidget
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.lockvocab   # ← 自分用に変更
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.lockvocab
         TARGETED_DEVICE_FAMILY: "1"
     info:
-      path: App/Info.plist
+      path: Generated/App-Info.plist
       properties:
         CFBundleDisplayName: LockVocab
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
     entitlements:
-      path: App/LockVocab.entitlements
+      path: Generated/LockVocab.entitlements
       properties:
-        com.apple.security.application-groups: [group.com.example.lockvocab]   # ← AppGroup.id と一致させる
+        com.apple.security.application-groups: [group.com.example.lockvocab]
   LockVocabWidget:
     type: app-extension
     platform: iOS
-    sources: [Widget, Shared]
+    sources:
+      - path: .
+        includes:
+          - VocabWidget.swift
+          - AppGroup.swift
+          - Models.swift
+          - SharedStore.swift
+          - WordPicker.swift
+          - SeedWords.swift
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.lockvocab.widget   # ← アプリ本体のID + .widget
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.lockvocab.widget
         TARGETED_DEVICE_FAMILY: "1"
     info:
-      path: Widget/Info.plist
+      path: Generated/Widget-Info.plist
       properties:
         CFBundleDisplayName: LockVocab Widget
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
-      path: Widget/LockVocabWidget.entitlements
+      path: Generated/LockVocabWidget.entitlements
       properties:
         com.apple.security.application-groups: [group.com.example.lockvocab]

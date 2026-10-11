@@ -1,22 +1,17 @@
 import Foundation
 
-/// 日付から「その日の単語」を決める。同じ日なら何度呼んでも同じ結果(ウィジェットとアプリで一致)。
-/// 奇数日は苦手語を優先、偶数日は通常語を登録順に進める。覚えた語は除外。
+/// 時刻から「その時間の単語」を決める。同じ時間帯なら何度呼んでも同じ結果(ウィジェットとアプリで一致)。
+/// 1時間ごとに登録順で次の単語へ進み、最後まで行くと最初に戻る。
 enum WordPicker {
-    static func dayNumber(_ date: Date, calendar: Calendar = .current) -> Int {
-        guard let ref = DateComponents(calendar: calendar, year: 2024, month: 1, day: 1).date else { return 0 }
-        return calendar.dateComponents([.day], from: ref, to: calendar.startOfDay(for: date)).day ?? 0
+    static func hourNumber(_ date: Date, calendar: Calendar = .current) -> Int {
+        guard let ref = DateComponents(calendar: calendar, year: 2024, month: 1, day: 1).date,
+              let hourStart = calendar.dateInterval(of: .hour, for: date)?.start else { return 0 }
+        return calendar.dateComponents([.hour], from: ref, to: hourStart).hour ?? 0
     }
 
-    static func word(on date: Date, from words: [Word]) -> Word? {
-        let pool = words.filter { $0.status != .mastered }
-        guard !pool.isEmpty else { return nil }
-        let day = max(dayNumber(date), 0)
-        let weak = pool.filter { $0.status == .weak }
-        let normal = pool.filter { $0.status != .weak }
-        if !weak.isEmpty && (normal.isEmpty || day % 2 == 1) {
-            return weak[(day / 2) % weak.count]
-        }
-        return normal[(day / 2) % normal.count]
+    static func word(at date: Date, from words: [Word]) -> Word? {
+        guard !words.isEmpty else { return nil }
+        let h = max(hourNumber(date), 0)
+        return words[h % words.count]
     }
 }

@@ -5,7 +5,7 @@ enum SeedWords {
     static let all: [Word] = rows.enumerated().map { i, r in
         Word(id: String(format: "seed-%03d", i + 1),
              translations: ["ja": r[0], "en": r[1], "es": r[2], "fr": r[3]],
-             examples: [:], status: .normal, isBuiltIn: true,
+             examples: [:], isBuiltIn: true,
              createdAt: Date(timeIntervalSince1970: 0))
     }
 

@@ -17,7 +17,7 @@ struct ContentView: View {
         NavigationStack {
             List {
                 if let today = store.todaysWord {
-                    Section("今日の単語") {
+                    Section("いまの単語") {
                         WordRow(word: today, langs: store.displayLangs)
                     }
                 }
@@ -27,10 +27,6 @@ struct ContentView: View {
                             WordRow(word: word, langs: store.displayLangs)
                         }
                         .buttonStyle(.plain)
-                        .swipeActions(edge: .leading) {
-                            Button("苦手") { store.setStatus(word.id, .weak) }.tint(.orange)
-                            Button("覚えた") { store.setStatus(word.id, .mastered) }.tint(.green)
-                        }
                     }
                     .onDelete { offsets in
                         let list = filtered
@@ -65,16 +61,7 @@ struct WordRow: View {
     var body: some View {
         let lines = langs.compactMap { word.text($0) }
         VStack(alignment: .leading, spacing: 2) {
-            HStack {
-                Text(lines.first ?? "(未入力)").font(.headline)
-                if word.status != .normal {
-                    Text(word.status.label)
-                        .font(.caption2)
-                        .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background(word.status == .weak ? Color.orange.opacity(0.25) : Color.green.opacity(0.25))
-                        .clipShape(Capsule())
-                }
-            }
+            Text(lines.first ?? "(未入力)").font(.headline)
             if lines.count > 1 {
                 Text(lines.dropFirst().joined(separator: " · "))
                     .font(.subheadline)

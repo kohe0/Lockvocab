@@ -12,7 +12,7 @@ final class WordStore: ObservableObject {
         persist()   // 初回起動時に初期単語をApp Groupへ書き出す
     }
 
-    var todaysWord: Word? { WordPicker.word(on: Date(), from: words) }
+    var todaysWord: Word? { WordPicker.word(at: Date(), from: words) }
 
     func upsert(_ word: Word) {
         if let i = words.firstIndex(where: { $0.id == word.id }) {
@@ -25,12 +25,6 @@ final class WordStore: ObservableObject {
 
     func delete(ids: [String]) {
         words.removeAll { ids.contains($0.id) }
-        persist()
-    }
-
-    func setStatus(_ id: String, _ status: StudyStatus) {
-        guard let i = words.firstIndex(where: { $0.id == id }) else { return }
-        words[i].status = status
         persist()
     }
 

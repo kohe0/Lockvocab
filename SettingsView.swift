@@ -36,7 +36,7 @@ struct SettingsView: View {
                     }
                 }
                 Section {
-                    Text("ウィジェットの更新タイミングはiOSが決めます。設定変更や単語の編集後も、ロック画面への反映に少し時間がかかることがあります。")
+                    Text("単語は1時間ごとに切り替わりますが、実際の切り替えタイミングはiOSが決めるため、数分ずれることがあります。設定変更や単語の編集後も、反映に少し時間がかかることがあります。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

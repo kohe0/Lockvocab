@@ -14,22 +14,22 @@ struct Provider: TimelineProvider {
 
     func getSnapshot(in context: Context, completion: @escaping (VocabEntry) -> Void) {
         let words = SharedStore.loadWords()
-        completion(VocabEntry(date: Date(), word: WordPicker.word(on: Date(), from: words),
+        completion(VocabEntry(date: Date(), word: WordPicker.word(at: Date(), from: words),
                               langs: SharedStore.displayLangs))
     }
 
-    /// 今日 + 以降7日分のエントリを先に作り、日付が変わるタイミングでiOSに切り替えてもらう。
+    /// 現在 + 以降48時間分(1時間ごと)のエントリを先に作り、時刻が変わるタイミングでiOSに切り替えてもらう。
     func getTimeline(in context: Context, completion: @escaping (Timeline<VocabEntry>) -> Void) {
         let words = SharedStore.loadWords()
         let langs = SharedStore.displayLangs
         let cal = Calendar.current
         let now = Date()
-        let start = cal.startOfDay(for: now)
+        let hourStart = cal.dateInterval(of: .hour, for: now)?.start ?? now
 
-        var entries = [VocabEntry(date: now, word: WordPicker.word(on: now, from: words), langs: langs)]
-        for d in 1...7 {
-            if let day = cal.date(byAdding: .day, value: d, to: start) {
-                entries.append(VocabEntry(date: day, word: WordPicker.word(on: day, from: words), langs: langs))
+        var entries = [VocabEntry(date: now, word: WordPicker.word(at: now, from: words), langs: langs)]
+        for h in 1...48 {
+            if let t = cal.date(byAdding: .hour, value: h, to: hourStart) {
+                entries.append(VocabEntry(date: t, word: WordPicker.word(at: t, from: words), langs: langs))
             }
         }
         completion(Timeline(entries: entries, policy: .atEnd))
@@ -106,8 +106,8 @@ struct VocabWidget: Widget {
             VocabWidgetView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("今日の単語")
-        .description("1日1語を複数言語でまとめて表示します。")
+        .configurationDisplayName("いまの単語")
+        .description("1時間ごとに1語を複数言語でまとめて表示します。")
         .supportedFamilies([.accessoryRectangular, .accessoryInline, .accessoryCircular,
                             .systemSmall, .systemMedium])
     }

@@ -29,12 +29,6 @@ struct WordEditView: View {
                         TextField("例文", text: binding(\.examples, lang.code), axis: .vertical)
                     }
                 }
-                Section("学習状態") {
-                    Picker("状態", selection: $draft.status) {
-                        ForEach(StudyStatus.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                }
             }
             .navigationTitle("単語")
             .navigationBarTitleDisplayMode(.inline)
